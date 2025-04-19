@@ -1,0 +1,42 @@
+[MASTER]
+ignore=venv,.tox,build,dist
+jobs=1
+load-plugins=pylint.extensions.docparams
+
+[MESSAGES CONTROL]
+disable=
+    # Noise
+    too-few-public-methods,
+    import-outside-toplevel,
+    broad-exception-caught,
+    logging-fstring-interpolation,
+    attribute-defined-outside-init,
+    missing-module-docstring,
+    invalid-name,
+    missing-class-docstring,
+
+[FORMAT]
+max-line-length=100
+
+[DESIGN]
+max-args=6
+max-locals=20
+max-branches=12
+max-returns=6
+max-statements=60
+
+[BASIC]
+good-names=i,j,k,ex,_,e
+ignored-argument-names=_.*|^unused_.*
+
+[DOCSTRING]
+docstring-min-length=5
+docstring-quotes=triple-double
+ignore-module=__init__.py
+
+[REPORTS]
+output-format=colorized
+reports=no
+
+[LOGGING]
+logging-format-style=new
