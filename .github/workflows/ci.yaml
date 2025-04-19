@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9, 3.10, 3.11, 3.12, 3.13, 3.14]
+        python-version: [3.9, 3.10, 3.11, 3.12, 3.13]
+
     steps:
       - uses: actions/checkout@v3
 
@@ -26,4 +27,5 @@ jobs:
           pip install tox
 
       - name: Run tests with tox
-        run: tox -e py${{ matrix.python-version }}
+        run: |
+          TOXENV=py${{ matrix.python-version }} && TOXENV=${TOXENV/./} tox -e $TOXENV
