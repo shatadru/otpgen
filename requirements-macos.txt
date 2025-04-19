@@ -1,0 +1,7 @@
+pyotp
+cryptography
+pyperclip
+qrcode[pil]
+rich
+pyzbar
+Pillow
