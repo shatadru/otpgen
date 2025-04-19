@@ -96,4 +96,4 @@ This project is licensed under the **GNU General Public License v3.0**. See the 
 
 ## 👨‍💻 Author
 
-Created with ❤️ by [Shatadru Bandyopadhyay](https://github.com/shatadru)
+Created with ❤️ by [Shatadru Bandyopadhyay](https://github.com/shatadru) with the help of ChatGPT (OpenAI), using a collaborative and vibe coding.
