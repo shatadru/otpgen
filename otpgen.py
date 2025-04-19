@@ -15,6 +15,8 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
 from cryptography.fernet import Fernet, InvalidToken
+from pyzbar.pyzbar import decode
+from PIL import Image
 
 try:
     import pyperclip
@@ -223,33 +225,18 @@ class OTPGen:
 
     def add_key(self, source):
         if os.path.isfile(source):
-            self.platform_check()
-            if self._platform == "darwin":
-                try:
-                    from pyzbar.pyzbar import decode
-                    from PIL import Image
-                except ImportError:
-                    log.error("Missing pyzbar or Pillow for QR parsing on macOS.")
-                    return
+            try:
                 img = Image.open(source)
                 decoded = decode(img)
                 if not decoded:
                     log.error("No QR code found in image.")
                     return
                 data = decoded[0].data.decode("utf-8")
-            elif zbarlight and Image:
-                with open(source, "rb") as img_file:
-                    image = Image.open(img_file)
-                    image.load()
-                    codes = zbarlight.scan_codes("qrcode", image)
-                    if not codes:
-                        log.error("No QR code found in image.")
-                        return
-                    data = codes[0].decode("utf-8")
-            else:
-                log.error("QR decoding requires zbarlight or pyzbar + Pillow.")
+            except Exception as e:
+                log.error(f"Failed to decode QR code: {e}")
                 return
 
+            # Proceed with parsing 'data' as before
             from urllib.parse import urlparse, parse_qs
             parsed = urlparse(data)
             label = parsed.path.strip("/")
@@ -260,6 +247,15 @@ class OTPGen:
             if not all([secret, otp_type, label]):
                 log.error("Incomplete data in QR code.")
                 return
+
+            self.get_password()
+            self.decrypt_store()
+            counter = "0"
+            new_id = str(len(self.store) + 1)
+            entry = f"{new_id} {secret} {otp_type} {issuer} {label} {counter}"
+            self.store.append(entry)
+            self.encrypt_store()
+            success("2FA entry added from QR code.")
         else:
             log.error("Manual secret input not supported in this mode.")
             return
@@ -503,4 +499,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

@@ -1,7 +1,0 @@
-pyotp
-cryptography
-pyperclip
-qrcode[pil]
-rich
-zbarlight
-Pillow
