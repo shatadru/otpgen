@@ -21,14 +21,17 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Install ZBar (system dependency)
+        run: sudo apt-get update && sudo apt-get install -y libzbar0
+
       - name: Install test dependencies
         run: pip install -r requirements-test.txt
 
       - name: Run tests
         run: tox -e py
 
-      - name: Lint
+      - name: Run linter
         run: tox -e lint
 
-      - name: Coverage
+      - name: Run coverage report
         run: tox -e coverage
