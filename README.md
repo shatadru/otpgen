@@ -1,159 +1,99 @@
-# 🔐 otpgen (Python CLI Edition)
+# otpgen.py 🛡️🔐
 
-[![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-blue)](https://github.com)
-[![Python](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.7%2B-blue.svg)](https://www.python.org/)
+[![macOS](https://img.shields.io/badge/platform-macOS-lightgrey?logo=apple)](https://www.apple.com/macos/)
+[![Linux](https://img.shields.io/badge/platform-Linux-yellow?logo=linux)](https://www.kernel.org/)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-A powerful, portable CLI tool for managing Time-based (TOTP) and Counter-based (HOTP) 2FA secrets—originally inspired by `otpgen.sh`, now reimagined in Python.
-
----
-
-## ✨ Features
-
-- 🔐 Secure encrypted keystore using AES-256 (via `cryptography`)
-- 🔍 Add TOTP/HOTP secrets by scanning QR code images
-- 🧾 List, generate, remove, import/export 2FA keys
-- 📋 Clipboard support (platform-aware, fallback safe)
-- 📸 Generate and open QR codes from stored secrets
-- 🧪 Tested with both **Linux** and **macOS**
+A secure, CLI-based 2FA TOTP/HOTP manager written in Python. Inspired by [`otpgen.sh`](https://github.com/shatadru/otpgen.sh), this version brings modularity, encryption, platform-awareness, and QR support.
 
 ---
 
-## ⚙️ Installation
+## 📦 Features
 
-### 📦 1. Clone the repo
+- 🔐 Encrypted keystore using `cryptography.fernet`
+- 🖼️ Add 2FA keys from QR code images (TOTP & HOTP)
+- 🧾 Export/import in CSV or JSON
+- 📋 Clipboard integration (with fallback)
+- 📸 QR generation with auto-preview (if not headless)
+- 🧠 Platform-aware setup (Linux/macOS)
+- 🧪 Unit tested & modular
+- 🧰 Auto-installs appropriate dependencies based on platform
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourname/otpgen-cli
-cd otpgen-cli
+git clone https://github.com/shatadru/otpgen.py.git
+cd otpgen.py
 ```
 
-### 🐍 2. Install dependencies (platform-aware)
+### 2. Install Requirements
 
-Use the built-in CLI support:
+> 🧠 otpgen auto-selects the right requirements file if you use `-i` or `--install`.
 
+Alternatively, you can manually install dependencies:
+
+#### For Linux:
 ```bash
-python3 otpgen.py --install
-```
-
-This auto-selects:
-- `requirements-linux.txt` (Linux)
-- `requirements-macos.txt` (macOS)
-
-Or install manually:
-
-```bash
-# For Linux
 pip install -r requirements-linux.txt
+```
 
-# For macOS (uses pyzbar + Pillow)
+#### For macOS:
+```bash
 brew install zbar
 pip install -r requirements-macos.txt
 ```
 
 ---
 
-## 🚀 Usage
-
-### 🛠 Initialize a keystore
+## 🛠️ Usage
 
 ```bash
-python3 otpgen.py --install
+# First-time install
+python otpgen.py -i
+
+# Add key from QR code image
+python otpgen.py -a path/to/qr.png
+
+# Generate OTP
+python otpgen.py -g 1
+
+# List saved keys
+python otpgen.py -l
+
+# Remove a key
+python otpgen.py -r 1
+
+# Export keys
+python otpgen.py --export json
+python otpgen.py --export csv
+
+# Import keys
+python otpgen.py --import keys.json --import-format json
 ```
 
-### ➕ Add a 2FA key (from QR code image)
+Use `--no-clip` to disable clipboard copy for OTPs in headless or minimal systems.
+
+---
+
+## 🧪 Run Tests
 
 ```bash
-python3 otpgen.py --add-key myqr.png
-```
-
-### 📋 List all keys
-
-```bash
-python3 otpgen.py --list-key
-```
-
-### 🔢 Generate OTP for a key
-
-```bash
-python3 otpgen.py --gen-key 1
-```
-
-Use `--no-clip` if you're in a headless session or clipboard fails:
-
-```bash
-python3 otpgen.py --gen-key 1 --no-clip
-```
-
-### 🧽 Remove a key
-
-```bash
-python3 otpgen.py --remove-key 1
+python -m unittest test.py
 ```
 
 ---
 
-## 📤 Export/Import
+## 📜 License
 
-### Export as JSON or CSV
-
-```bash
-python3 otpgen.py --export json
-python3 otpgen.py --export csv
-```
-
-### Import from JSON or CSV
-
-```bash
-python3 otpgen.py --import keys.json --import-format json
-```
+This project is licensed under the **GNU General Public License v3.0**. See the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 📸 Generate QR code from a stored key
+## 👨‍💻 Author
 
-```bash
-python3 otpgen.py --qr 1
-```
-
-This opens the image automatically (unless in headless mode).
-
----
-
-## 🧪 Test QR Code Example
-
-Generate one manually:
-
-```python
-import qrcode
-uri = "otpauth://totp/test@example.com?secret=JBSWY3DPEHPK3PXP&issuer=otpgen-test"
-qrcode.make(uri).save("otpgen-test-qr.png")
-```
-
-Add it:
-
-```bash
-python3 otpgen.py --add-key otpgen-test-qr.png
-```
-
----
-
-## 📎 Clipboard Notes
-
-- Linux: install `xclip`, `xsel`, or `wl-clipboard`
-- macOS: ensure `pbcopy` is available (`xcode-select --install`)
-- Fallbacks and `--no-clip` supported
-
----
-
-## 🧪 Testing
-
-```bash
-python3 -m unittest test.py
-```
-
----
-
-## 📝 License
-
-MIT © [Shatadru Bandyopadhyay](https://github.com/shatadru)
+Created with ❤️ by [Shatadru Bandyopadhyay](https://github.com/shatadru)
