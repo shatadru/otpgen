@@ -28,7 +28,8 @@ jobs:
 
       - name: Run tests and coverage
         run: |
-          TOXENV=py${{ matrix.python-version//./ }} tox -e $TOXENV
+          TOXENV=py$(echo "${{ matrix.python-version }}" | tr -d .)
+          tox -e $TOXENV
 
   lint:
     runs-on: ubuntu-latest
@@ -65,5 +66,4 @@ jobs:
           pip install tox
 
       - name: Combine and report coverage
-        run: |
-          tox -e report
+        run: tox -e report
