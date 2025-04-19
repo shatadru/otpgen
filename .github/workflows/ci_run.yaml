@@ -1,4 +1,4 @@
-name: CI for otpgen
+name: CI
 
 on:
   push:
@@ -14,10 +14,6 @@ jobs:
         python-version: [3.11, 3.12, 3.13]
     steps:
       - uses: actions/checkout@v3
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libzbar0 libzbar-dev
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
@@ -29,11 +25,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install tox
 
-      - name: Run tests with tox
-        run: |
-          TOXENV=py${{ matrix.python-version }} && TOXENV=${TOXENV/./} tox -e $TOXENV
+      - name: Run tests
+        run: tox -e py
 
-  linters:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -66,5 +61,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install tox
 
-      - name: Run coverage report
-        run: tox -e cover
+      - name: Run coverage
+        run: tox -e coverage
+
